@@ -17,6 +17,8 @@ export default function Home() {
   const [array, setArray] = useState<number[]>([]);
   const [result, setResult] = useState<number | null>(null);
   const [val, setVal] = useState<number | null>(null);
+  const [guesses, setGuesses] = useState<any[]>([]);
+  const [currentGuess, setCurrentGuess] = useState<number>();
 
   // Load the WebAssembly module when the component mounts
   useEffect(() => {
@@ -59,6 +61,7 @@ export default function Home() {
           values: array,
           target: target,
           target_found_index: null,
+          guesses: [],
         };
 
         // Call our Rust function
@@ -66,6 +69,9 @@ export default function Home() {
 
         // Get the result
         setResult(result.target_found_index);
+
+        // Store the guesses
+        setGuesses(result.guesses);
 
         console.log("Search result:", result);
       } catch (error) {
