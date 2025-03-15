@@ -4,12 +4,10 @@ import { useEffect, useState } from "react";
 
 // Import your WebAssembly module
 // Adjust the path to where your pkg directory is located
-import init, {
-  binary_search,
-  greet,
-} from "@/pkg/sorting_visualiser_wasm";
+import init, { binary_search, greet } from "@/pkg/sorting_visualiser_wasm";
 import Title from "../components/Title";
 import InputNumber from "@/components/InputNumber";
+import { Container } from "lucide-react";
 
 export default function Home() {
   // Track if the WebAssembly module is loaded
@@ -18,7 +16,6 @@ export default function Home() {
   const [result, setResult] = useState<number | null>(null);
   const [val, setVal] = useState<number | null>(null);
   const [guesses, setGuesses] = useState<any[]>([]);
-  const [currentGuess, setCurrentGuess] = useState<number>();
 
   // Load the WebAssembly module when the component mounts
   useEffect(() => {
@@ -30,7 +27,7 @@ export default function Home() {
         setWasmLoaded(true);
 
         //create a sorted array for binary search
-        const sortedArray = Array.from({ length: 50 }, (_, i) => i * 2);
+        const sortedArray = Array.from({ length: 103 }, (_, i) => i * 2);
         setArray(sortedArray);
 
         console.log("WebAssembly module loaded successfully!");
@@ -87,11 +84,26 @@ export default function Home() {
       <div className="justify-items-end mr-10">
         <Title />
       </div>
-      <InputNumber val={val} setVal={setVal} setResult={setResult} handleSearch={handleSearch} wasmLoaded={wasmLoaded} />
-    
+      <InputNumber
+        val={val}
+        setVal={setVal}
+        setResult={setResult}
+        handleSearch={handleSearch}
+        wasmLoaded={wasmLoaded}
+      />
+
       {/* Display the array */}
-      <div className="justify-items-center mt-30">
-        <p className="font-mono">{array}</p>
+      <div className="justify-items-center mt-30 gap-2 w-full flex flex-row flex-wrap font-mono">
+        {array.map((number, index) => (
+          <div
+            key={index}
+            id={`array-element-${index}`}
+            className="bg-gray-900 p-2 rounded text-white w-10 h-10 flex items-center justify-center"
+            style={{width: "40px", height: "40px", flexShrink: 1, flexGrow: 1}}
+          >
+            {number}
+          </div>
+        ))}
       </div>
       {/* Display the position */}
       <div className="justify-items-start mt-30 ml-35">
