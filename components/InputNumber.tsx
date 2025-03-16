@@ -8,6 +8,7 @@ interface InputNumberProps {
     setResult: (result: number | null) => void;
     handleSearch: (target: number) => void;
     wasmLoaded: boolean;
+    setIsAnimating: (value: boolean) => void;
 }
 
 export default function InputNumber({
@@ -16,6 +17,7 @@ export default function InputNumber({
   setResult,
   handleSearch,
   wasmLoaded,
+  setIsAnimating,
 }: InputNumberProps) {
   return (
     <div className="mt-20 justify-items-center">
@@ -41,6 +43,7 @@ export default function InputNumber({
           className="bg-green-200 border-opacity-0 hover:bg-green-100"
           onClick={() => {
             handleSearch(val as number);
+            setIsAnimating(true);
           }}
           disabled={!wasmLoaded}
           //className={styles.button}

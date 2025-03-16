@@ -12,10 +12,12 @@ import { Container } from "lucide-react";
 export default function Home() {
   // Track if the WebAssembly module is loaded
   const [wasmLoaded, setWasmLoaded] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [array, setArray] = useState<number[]>([]);
   const [result, setResult] = useState<number | null>(null);
   const [val, setVal] = useState<number | null>(null);
   const [guesses, setGuesses] = useState<any[]>([]);
+  const [currentGuessIndex, setCurrentGuessIndex] = useState(0);
 
   // Load the WebAssembly module when the component mounts
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function Home() {
         setWasmLoaded(true);
 
         //create a sorted array for binary search
-        const sortedArray = Array.from({ length: 103 }, (_, i) => i * 2);
+        const sortedArray = Array.from({ length: 150 }, (_, i) => i * 2);
         setArray(sortedArray);
 
         console.log("WebAssembly module loaded successfully!");
@@ -80,7 +82,7 @@ export default function Home() {
   };
 
   return (
-    <main className="p-6 bg-gradient-to-r from-slate-500 via-slate-700 to-slate-800 flex-1 min-h-screen">
+    <main className="p-6 bg-gradient-to-r from-slate-500 via-slate-700 to-slate-800 min-h-screen">
       <div className="justify-items-end mr-10">
         <Title />
       </div>
@@ -90,16 +92,17 @@ export default function Home() {
         setResult={setResult}
         handleSearch={handleSearch}
         wasmLoaded={wasmLoaded}
+        setIsAnimating={setIsAnimating}
       />
 
       {/* Display the array */}
-      <div className="justify-items-center mt-30 gap-2 w-full flex flex-row flex-wrap font-mono">
+      <div className="justify-items-center justify-center mt-20 gap-2 w-full flex flex-row flex-wrap font-mono p-10">
         {array.map((number, index) => (
           <div
             key={index}
             id={`array-element-${index}`}
-            className="bg-gray-900 p-2 rounded text-white w-10 h-10 flex items-center justify-center"
-            style={{width: "40px", height: "40px", flexShrink: 1, flexGrow: 1}}
+            className="bg-gray-900 m-1 rounded text-white flex items-center justify-center"
+            style={{ width: "40px", height: "40px" }}
           >
             {number}
           </div>
