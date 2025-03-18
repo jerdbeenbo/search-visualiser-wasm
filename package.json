@@ -18,21 +18,17 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.2",
-    "tailwindcss-animate": "^1.0.7",
-    "@tailwindcss/postcss": "^3.3.5"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^3.3.5",
+    "tailwindcss": "^3.3.5",
+    "postcss": "^8.4.31",
+    "autoprefixer": "^10.4.16",
     "@types/animejs": "^3.1.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "typescript": "^5"
-  },
-  "optionalDependencies": {
-    "@tailwindcss/oxide-linux-x64-gnu": "4.0.13",
-    "@tailwindcss/oxide-linux-arm64-gnu": "4.0.13",
-    "@tailwindcss/oxide-linux-x64-musl": "4.0.13",
-    "@tailwindcss/oxide-linux-arm64-musl": "4.0.13"
   }
 }
