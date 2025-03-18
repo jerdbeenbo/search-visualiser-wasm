@@ -28,5 +28,11 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "typescript": "^5"
+  },
+  "optionalDependencies": {
+    "@tailwindcss/oxide-linux-x64-gnu": "4.0.13",
+    "@tailwindcss/oxide-linux-arm64-gnu": "4.0.13",
+    "@tailwindcss/oxide-linux-x64-musl": "4.0.13",
+    "@tailwindcss/oxide-linux-arm64-musl": "4.0.13"
   }
 }
