@@ -8,6 +8,7 @@ import init, { binary_search, greet } from "@/pkg/sorting_visualiser_wasm";
 import Title from "../components/Title";
 import InputNumber from "@/components/InputNumber";
 import { Container } from "lucide-react";
+import anime from "animejs";
 
 export default function Home() {
   // Track if the WebAssembly module is loaded
@@ -29,7 +30,7 @@ export default function Home() {
         setWasmLoaded(true);
 
         //create a sorted array for binary search
-        const sortedArray = Array.from({ length: 150 }, (_, i) => i * 2);
+        const sortedArray = Array.from({ length: 121 }, (_, i) => i * 2);
         setArray(sortedArray);
 
         console.log("WebAssembly module loaded successfully!");
@@ -70,15 +71,171 @@ export default function Home() {
         setResult(result.target_found_index);
 
         // Store the guesses
-        setGuesses(result.guesses);
+        setGuesses(result.guesses); //-> This takes time!
 
         console.log("Search result:", result);
+
+        return result.guesses; // -> return the guesses immedately for use
       } catch (error) {
         console.error("Error during search:", error);
       }
     } else {
       console.log("WabAssembly not loaded yet");
     }
+  };
+
+  const resetAnimations = () => {
+
+
+    // Stop all running animations
+    anime.remove(".element-dot");
+    
+    // Reset all dots to original appearance
+    anime({
+      targets: ".element-dot",
+      backgroundColor: "#0F172A", // Your original dark color
+      translateY: 0,
+      scale: 1,
+      opacity: 0.7,
+      duration: 300
+    });
+    
+    // Reset state
+    setResult(null);
+    setGuesses([]);
+    setCurrentGuessIndex(0);
+  };
+
+  const handleElementClick = (e: any) => {
+    //handle the search
+    const index = parseInt(e.target.dataset.index);
+    const num: number = array[e.target.dataset.index];
+    setVal(num);
+    let guesses_immediate: any = handleSearch(num); // -> don't use val immedately because it is asynchronous
+  
+    // Animate from the clicked element
+    animateFromIndex(index, guesses_immediate);
+  };
+
+  // Handles animation for a value (used from search bar)
+  const animateSearch = (value: number, guesses_l: any) => {
+    // Find the index of the value in the array
+    const index = array.indexOf(value);
+
+    if (index !== -1) {
+      // Trigger the animation
+      animateFromIndex(index, guesses_l);
+    } else {
+      // If value not found, animate all dots (unwanted animation)
+      anime({
+        targets: ".element-dot",
+        // scale: [
+        //   { value: 1.1, easing: "easeOutSine", duration: 250 },
+        //   { value: 1, easing: "easeOutQuad", duration: 500 },
+        // ],
+        opacity: [
+          { value: 1, easing: "easeOutSine", duration: 250 },
+          { value: 0.7, easing: "easeOutQuad", duration: 500 },
+        ],
+        translateX: [
+          { value: 5, easing: "easeOutSine", duration: 50 },
+          { value: -5, easing: "easeOutQuad", duration: 50 },
+          { value: 1, easing: "easeOutSine", duration: 50 },
+        ],
+        backgroundColor: [
+          { value: "#ff0f0f", easing: "easeOutQuad", duration: 100 },
+          { value: "#0F172A", easing: "easeOutQuad", duration: 100 },
+        ],
+        delay: anime.stagger(50, {
+          grid: [
+            Math.ceil(Math.sqrt(array.length)),
+            Math.ceil(array.length / Math.ceil(Math.sqrt(array.length))),
+          ],
+          from: 'center',
+        }),
+      });
+    }
+  };
+
+  // Once the index is found animate from that index (expected animation)
+  const animateFromIndex = (index: number, guesses_l: any) => {
+    //remove any existing animations
+    anime.remove(".element-dot");
+
+    const timeline = anime.timeline(); // => instantiate a timeline for the animations
+
+    //create a timeline completion function
+    timeline.complete = function () {
+      if (guesses_l.length > 0) {
+        startBounceAnimation(guesses_l[guesses_l.length - 1].current_middle);
+      }
+    };
+    //TODO: -> This is a cool effect! Maybe for updating the array values?
+    // timeline.add({
+    //     targets: '.element-dot',
+    //     translateX: anime.stagger(10, {grid: [14, 5], from: 'center', axis: 'x'}),
+    //     translateY: anime.stagger(10, {grid: [14, 5], from: 'center', axis: 'y'}),
+    //     rotateZ: anime.stagger([0, 90], {grid: [14, 5], from: 'center', axis: 'x'}),
+    //     delay: anime.stagger(200, {grid: [14, 5], from: 'center'}),
+    //     easing: 'easeInOutQuad',
+    //     duration: 1000,
+    // })
+
+    timeline.add({
+      targets: ".element-dot",
+      scale: [
+        { value: 1.1, easing: "easeOutSine", duration: 250 },
+        { value: 1, easing: "easeOutQuad", duration: 500 },
+      ],
+      translateY: [
+        { value: -10, easing: "easeOutSine", duration: 250 },
+        { value: 0, easing: "easeOutQuad", duration: 500 },
+      ],
+      opacity: [
+        { value: 1, easing: "easeOutSine", duration: 250 },
+        { value: 0.7, easing: "easeOutQuad", duration: 500 },
+      ],
+      delay: anime.stagger(100, {
+        grid: [
+          Math.ceil(Math.sqrt(array.length)),
+          Math.ceil(array.length / Math.ceil(Math.sqrt(array.length))),
+        ],
+        from: index,
+      }),
+    });
+
+    //animate the guesses (excluding the last one)
+    for (let i = 0; i < guesses_l.length; i++) {
+      console.log("guess.index: " + guesses_l[i].current_middle);
+      timeline.add({
+        targets: `.element-dot[data-index="${guesses_l[i].current_middle}"]`,
+        backgroundColor: "#16A34A", //highlight the current guess
+        scale: [
+          { value: 1.1, easing: "easeOutSine" },
+          { value: 1, easing: "easeOutSine" },
+        ],
+        duration: 600,
+      });
+    }
+
+    //play the animation
+    timeline.play();
+  };
+
+  const startBounceAnimation = (elementIndex: any) => {
+    // Clear any existing animations first
+    anime.remove(`.element-dot[data-index="${elementIndex}"]`);
+
+    // Create a standalone animation
+    return anime({
+      targets: `.element-dot[data-index="${elementIndex}"]`,
+      backgroundColor: "#16A34A",
+      translateY: -10,
+      direction: "alternate",
+      loop: true,
+      duration: 300,
+      easing: "easeInOutQuad",
+    });
   };
 
   return (
@@ -93,15 +250,28 @@ export default function Home() {
         handleSearch={handleSearch}
         wasmLoaded={wasmLoaded}
         setIsAnimating={setIsAnimating}
+        animateSearch={animateSearch}
+        resetAnimations={resetAnimations}
       />
 
       {/* Display the array */}
-      <div className="justify-items-center justify-center mt-20 gap-2 w-full flex flex-row flex-wrap font-mono p-10">
+      <div
+        className="group mt-10 w-full font-mono p-2 mx-auto"
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${Math.ceil(
+            Math.sqrt(array.length)
+          )}, 50px)`,
+          gap: "4px",
+          justifyContent: "center",
+        }}
+      >
         {array.map((number, index) => (
           <div
             key={index}
-            id={`array-element-${index}`}
-            className="bg-gray-900 m-1 rounded text-white flex items-center justify-center"
+            onClick={handleElementClick}
+            data-index={index}
+            className="cursor-pointer element-dot opacity-70 bg-gray-900 transition-colors hover:bg-slate-500 m-1 rounded-full text-white flex items-center justify-center text-sm"
             style={{ width: "40px", height: "40px" }}
           >
             {number}
@@ -109,8 +279,8 @@ export default function Home() {
         ))}
       </div>
       {/* Display the position */}
-      <div className="justify-items-start mt-30 ml-35">
-        <h1 className="font-mono text-green-500 text-4xl">Index: {result}</h1>
+      <div className="justify-items-start mt-5 ml-35">
+        <h1 className="font-mono text-green-500 text-2xl">Index: {result}</h1>
       </div>
     </main>
   );

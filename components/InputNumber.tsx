@@ -9,6 +9,8 @@ interface InputNumberProps {
     handleSearch: (target: number) => void;
     wasmLoaded: boolean;
     setIsAnimating: (value: boolean) => void;
+    animateSearch: (e: any, guesses_immediate: any) => void;
+    resetAnimations: () => void;
 }
 
 export default function InputNumber({
@@ -18,11 +20,16 @@ export default function InputNumber({
   handleSearch,
   wasmLoaded,
   setIsAnimating,
+  animateSearch,
+  resetAnimations
 }: InputNumberProps) {
   return (
     <div className="mt-20 justify-items-center">
       <label className="block mb-2 font-mono tracking-wide text-green-200">
         Search for a number:
+      </label>
+      <label className="block mb-2 font-mono tracking-wide text-green-200">
+        &lt;or click on one&gt;
       </label>
       <div className="flex gap-2">
         <Input
@@ -42,13 +49,26 @@ export default function InputNumber({
           size="icon"
           className="bg-green-200 border-opacity-0 hover:bg-green-100"
           onClick={() => {
-            handleSearch(val as number);
+            let guesses_immediate = handleSearch(val as number);
+            animateSearch(val as number, guesses_immediate);
             setIsAnimating(true);
           }}
           disabled={!wasmLoaded}
           //className={styles.button}
         >
           <ChevronRight className="text-black" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          className="bg-red-200 border-opacity-0 hover:bg-red-100"
+          onClick={() => {
+            resetAnimations();
+          }}
+          disabled={!wasmLoaded}
+          //className={styles.button}
+        >
+          <div className="text-black">!</div>
         </Button>
       </div>
     </div>
