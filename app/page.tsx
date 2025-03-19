@@ -271,7 +271,7 @@ export default function Home() {
             key={index}
             onClick={handleElementClick}
             data-index={index}
-            className="cursor-pointer element-dot opacity-70 bg-gray-900 transition-colors hover:bg-slate-500 m-1 rounded-full text-white flex items-center justify-center text-sm"
+            className="sm:w-16 cursor-pointer element-dot opacity-70 bg-gray-900 transition-colors hover:bg-slate-500 m-1 rounded-full text-white flex items-center justify-center text-sm"
             style={{ width: "40px", height: "40px" }}
           >
             {number}
