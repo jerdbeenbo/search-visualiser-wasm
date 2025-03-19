@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@media screen and (max-width: 640px) {
+    .group {
+      padding: 0;
+      gap: 2px;
+    }
+    
+    .element-dot {
+      font-size: 0.7rem; /* Smaller text on small screens */
+    }
+  }
