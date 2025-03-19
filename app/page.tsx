@@ -106,15 +106,43 @@ export default function Home() {
     setCurrentGuessIndex(0);
   };
 
-  const handleElementClick = (e: any) => {
-    //handle the search
-    const index = parseInt(e.target.dataset.index);
-    const num: number = array[e.target.dataset.index];
-    setVal(num);
-    let guesses_immediate: any = handleSearch(num); // -> don't use val immedately because it is asynchronous
-  
-    // Animate from the clicked element
-    animateFromIndex(index, guesses_immediate);
+  const handleElementWithReset = (e: any) => {
+    // First, stop all running animations
+    anime.remove(".element-dot");
+    
+    // Reset all dots to original appearance
+    anime({
+      targets: ".element-dot",
+      backgroundColor: "#0F172A",
+      translateY: 0,
+      scale: 1,
+      opacity: 0.7,
+      duration: 100, // Make this faster
+      complete: function() {
+        // Only after the reset animation completes, handle the click
+        const index = parseInt(e.target.dataset.index);
+        const num = array[index];
+        setVal(num);
+        
+        // Create the data structure directly
+        if (wasmLoaded) {
+          const data = {
+            values: array,
+            target: num,
+            target_found_index: null,
+            guesses: [],
+          };
+          
+          // Get results directly
+          const result = binary_search(data);
+          setResult(result.target_found_index);
+          setGuesses(result.guesses);
+          
+          // Now animate with the results we have
+          animateFromIndex(index, result.guesses);
+        }
+      }
+    });
   };
 
   // Handles animation for a value (used from search bar)
@@ -269,7 +297,7 @@ export default function Home() {
         {array.map((number, index) => (
           <div
             key={index}
-            onClick={handleElementClick}
+            onClick={handleElementWithReset}
             data-index={index}
             className="cursor-pointer element-dot opacity-70 bg-gray-900 transition-colors hover:bg-slate-500 m-1 rounded-full text-white flex items-center justify-center text-sm"
             style={{ 
