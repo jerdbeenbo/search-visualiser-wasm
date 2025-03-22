@@ -299,10 +299,8 @@ export default function Home() {
             key={index}
             onClick={handleElementWithReset}
             data-index={index}
-            className="cursor-pointer element-dot opacity-70 bg-gray-900 transition-colors hover:bg-slate-500 m-1 rounded-full text-white flex items-center justify-center text-sm"
+            className="cursor-pointer element-dot opacity-70 bg-gray-900 transition-colors hover:bg-slate-500 m-1 rounded-full text-white flex items-center justify-center text-sm w-8 h-8 sm:w-10 sm:h-10"
             style={{ 
-              width: '40px', 
-              height: '40px',
               borderRadius: "50%",
             }}
           >
