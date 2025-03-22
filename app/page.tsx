@@ -85,11 +85,9 @@ export default function Home() {
   };
 
   const resetAnimations = () => {
-
-
     // Stop all running animations
     anime.remove(".element-dot");
-    
+
     // Reset all dots to original appearance
     anime({
       targets: ".element-dot",
@@ -97,9 +95,9 @@ export default function Home() {
       translateY: 0,
       scale: 1,
       opacity: 0.7,
-      duration: 300
+      duration: 300,
     });
-    
+
     // Reset state
     setResult(null);
     setGuesses([]);
@@ -109,7 +107,7 @@ export default function Home() {
   const handleElementWithReset = (e: any) => {
     // First, stop all running animations
     anime.remove(".element-dot");
-    
+
     // Reset all dots to original appearance
     anime({
       targets: ".element-dot",
@@ -118,12 +116,12 @@ export default function Home() {
       scale: 1,
       opacity: 0.7,
       duration: 100, // Make this faster
-      complete: function() {
+      complete: function () {
         // Only after the reset animation completes, handle the click
         const index = parseInt(e.target.dataset.index);
         const num = array[index];
         setVal(num);
-        
+
         // Create the data structure directly
         if (wasmLoaded) {
           const data = {
@@ -132,16 +130,16 @@ export default function Home() {
             target_found_index: null,
             guesses: [],
           };
-          
+
           // Get results directly
           const result = binary_search(data);
           setResult(result.target_found_index);
           setGuesses(result.guesses);
-          
+
           // Now animate with the results we have
           animateFromIndex(index, result.guesses);
         }
-      }
+      },
     });
   };
 
@@ -179,7 +177,7 @@ export default function Home() {
             Math.ceil(Math.sqrt(array.length)),
             Math.ceil(array.length / Math.ceil(Math.sqrt(array.length))),
           ],
-          from: 'center',
+          from: "center",
         }),
       });
     }
@@ -268,7 +266,6 @@ export default function Home() {
 
   return (
     <main className="p-6 bg-gradient-to-r from-slate-500 via-slate-700 to-slate-800 min-h-screen">
-      <meta name="theme-color" content="#334155" />
       <div className="justify-items-end mr-10">
         <Title />
       </div>
@@ -301,7 +298,7 @@ export default function Home() {
             onClick={handleElementWithReset}
             data-index={index}
             className="cursor-pointer element-dot opacity-70 bg-gray-900 transition-colors hover:bg-slate-500 m-1 rounded-full text-white flex items-center justify-center text-sm w-8 h-8 sm:w-10 sm:h-10"
-            style={{ 
+            style={{
               borderRadius: "50%",
             }}
           >
