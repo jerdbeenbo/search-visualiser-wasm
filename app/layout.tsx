@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,8 +16,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Search Visualiser",
   description: "A search visualiser using Rust + WASM + Nextjs",
-  themeColor: "#334155"
 };
+export const viewport: Viewport = {
+  themeColor: "#334155",
+}
 
 export default function RootLayout({
   children,
