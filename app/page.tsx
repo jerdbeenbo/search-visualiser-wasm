@@ -284,12 +284,12 @@ export default function Home() {
 
       {/* Display the array */}
       <div
-        className="group mt-10 w-full font-mono p-2 mx-auto"
+        className="group mt-10 w-full font-mono p-3 mx-auto"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${Math.ceil(
             Math.sqrt(array.length)
-          )}, 50px)`,
+          )}, minmax(30px, 50px))`,
           gap: "4px",
           justifyContent: "center",
         }}
@@ -301,9 +301,9 @@ export default function Home() {
             data-index={index}
             className="cursor-pointer element-dot opacity-70 bg-gray-900 transition-colors hover:bg-slate-500 m-1 rounded-full text-white flex items-center justify-center text-sm"
             style={{ 
-              width: "clamp(30px, 8vw, 40px)", 
-              height: "clamp(30px, 8vw, 40px)",
-              borderRadius: "50%"
+              width: '40px', 
+              height: '40px',
+              borderRadius: "50%",
             }}
           >
             {number}
