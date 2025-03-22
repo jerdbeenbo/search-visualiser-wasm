@@ -268,7 +268,7 @@ export default function Home() {
 
   return (
     <main className="p-6 bg-gradient-to-r from-slate-500 via-slate-700 to-slate-800 min-h-screen">
-      <meta name="theme-color" content="#334155"></meta>
+      <meta name="theme-color" content="#334155" />
       <div className="justify-items-end mr-10">
         <Title />
       </div>
