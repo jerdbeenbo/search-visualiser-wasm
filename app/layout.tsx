@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = {
   themeColor: "#334155",
+  colorScheme: 'dark',
 }
 
 export default function RootLayout({
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="theme-color" content="#334155" />
+        <meta name="color-scheme" content="dark" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
