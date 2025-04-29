@@ -29,7 +29,7 @@ This project showcases how to bridge high-performance Rust algorithms with a mod
 
 2. Build the WebAssembly module
    ```bash
-   wasm-pack build --target web --out-dir ../pkg
+   wasm-pack build --target web --out-dir pkg
    ```
 
 3. Install JavaScript dependencies
