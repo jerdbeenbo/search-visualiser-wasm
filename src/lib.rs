@@ -21,6 +21,45 @@ pub struct SortingData {
     pub guesses: Vec<Guess>,
 }
 
+#[wasm_bindgen]
+pub fn linear_search(js_val: JsValue) -> Result<JsValue, JsValue> {
+    let mut data: SortingData = serde_wasm_bindgen::from_value(js_val)?;
+
+    //Linear search through, checking each element iteratively
+
+    //initialise the guesses array for animation purposes later
+    let mut guesses_total: Vec<Guess> = Vec::new();
+
+
+    for i in 0..data.values.len() {
+        
+        let current_guess = Guess {
+            current_middle: i,
+            current_high: i,
+            current_low: i,
+        };
+
+        // Add each state to our guesses vector
+        guesses_total.push(current_guess);
+        if data.values[i] == data.target {
+            //found the target
+            data.target_found_index = Some(i as i32);
+            break;
+        }
+    }
+
+        // If we didn't find it, set found_index to None
+        if data.target_found_index.is_none() {
+            data.target_found_index = None;
+        }
+    
+        // Store the guesses in the data structure
+        data.guesses = guesses_total;
+
+    // Convert the Rust structure back to a JavaScript object and return result
+    Ok(serde_wasm_bindgen::to_value(&data)?)
+} 
+
 //Record eacch value at each step
 #[derive(Serialize, Deserialize, Clone, Copy)]
 pub struct Guess {

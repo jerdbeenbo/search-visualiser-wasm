@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 // Import your WebAssembly module
 // Adjust the path to where your pkg directory is located
-import init, { binary_search, greet } from "@/pkg/sorting_visualiser_wasm";
+import init, { binary_search, greet, linear_search } from "@/pkg/sorting_visualiser_wasm";
 import Title from "../components/Title";
 import InputNumber from "@/components/InputNumber";
 import { Container } from "lucide-react";
