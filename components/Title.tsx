@@ -1,6 +1,6 @@
 export default function Title() {
   const title: string = "Rust + WebAssembly + Next.js";
-  const subTitle: string = "Binary Search Visualiser";
+  const subTitle: string = "Search Visualiser from WASM Binary";
 
   return (
     <>

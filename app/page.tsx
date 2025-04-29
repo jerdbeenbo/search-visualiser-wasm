@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import init, { binary_search, greet, linear_search } from "@/pkg/sorting_visualiser_wasm";
 import Title from "../components/Title";
 import InputNumber from "@/components/InputNumber";
-import { Container } from "lucide-react";
+import SearchAlgorithmSelector from "@/components/SearchAlgorithmSelector";
 import anime from "animejs";
 
 export default function Home() {
@@ -19,6 +19,8 @@ export default function Home() {
   const [val, setVal] = useState<number | null>(null);
   const [guesses, setGuesses] = useState<any[]>([]);
   const [currentGuessIndex, setCurrentGuessIndex] = useState(0);
+  // Add a state for the selected algorithm
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>("linear");
 
   // Load the WebAssembly module when the component mounts
   useEffect(() => {
@@ -52,7 +54,16 @@ export default function Home() {
     }
   };
 
-  //Function to call our Rust binary search function
+  // Function to perform search based on the selected algorithm
+  const performSearch = (data: any) => {
+    if (selectedAlgorithm === "linear") {
+      return linear_search(data);
+    } else {
+      return binary_search(data);
+    }
+  };
+
+  //Function to call our Rust search function based on selected algorithm
   const handleSearch = (target: number) => {
     if (wasmLoaded) {
       try {
@@ -64,8 +75,8 @@ export default function Home() {
           guesses: [],
         };
 
-        // Call our Rust function
-        const result = binary_search(data);
+        // Call our Rust function based on the selected algorithm
+        const result = performSearch(data);
 
         // Get the result
         setResult(result.target_found_index);
@@ -75,12 +86,12 @@ export default function Home() {
 
         console.log("Search result:", result);
 
-        return result.guesses; // -> return the guesses immedately for use
+        return result.guesses; // -> return the guesses immediately for use
       } catch (error) {
         console.error("Error during search:", error);
       }
     } else {
-      console.log("WabAssembly not loaded yet");
+      console.log("WebAssembly not loaded yet");
     }
   };
 
@@ -115,7 +126,7 @@ export default function Home() {
       translateY: 0,
       scale: 1,
       opacity: 0.7,
-      duration: 100, // Make this faster
+      duration: 50, // Make this faster
       complete: function () {
         // Only after the reset animation completes, handle the click
         const index = parseInt(e.target.dataset.index);
@@ -131,8 +142,8 @@ export default function Home() {
             guesses: [],
           };
 
-          // Get results directly
-          const result = binary_search(data);
+          // Get results directly using the selected algorithm
+          const result = performSearch(data);
           setResult(result.target_found_index);
           setGuesses(result.guesses);
 
@@ -155,10 +166,6 @@ export default function Home() {
       // If value not found, animate all dots (unwanted animation)
       anime({
         targets: ".element-dot",
-        // scale: [
-        //   { value: 1.1, easing: "easeOutSine", duration: 250 },
-        //   { value: 1, easing: "easeOutQuad", duration: 500 },
-        // ],
         opacity: [
           { value: 1, easing: "easeOutSine", duration: 250 },
           { value: 0.7, easing: "easeOutQuad", duration: 500 },
@@ -196,30 +203,20 @@ export default function Home() {
         startBounceAnimation(guesses_l[guesses_l.length - 1].current_middle);
       }
     };
-    //TODO: -> This is a cool effect! Maybe for updating the array values?
-    // timeline.add({
-    //     targets: '.element-dot',
-    //     translateX: anime.stagger(10, {grid: [14, 5], from: 'center', axis: 'x'}),
-    //     translateY: anime.stagger(10, {grid: [14, 5], from: 'center', axis: 'y'}),
-    //     rotateZ: anime.stagger([0, 90], {grid: [14, 5], from: 'center', axis: 'x'}),
-    //     delay: anime.stagger(200, {grid: [14, 5], from: 'center'}),
-    //     easing: 'easeInOutQuad',
-    //     duration: 1000,
-    // })
 
     timeline.add({
       targets: ".element-dot",
       scale: [
-        { value: 1.1, easing: "easeOutSine", duration: 250 },
-        { value: 1, easing: "easeOutQuad", duration: 500 },
+        { value: 1.1, easing: "easeOutSine", duration: 200 },
+        { value: 1, easing: "easeOutQuad", duration: 400 },
       ],
       translateY: [
-        { value: -10, easing: "easeOutSine", duration: 250 },
-        { value: 0, easing: "easeOutQuad", duration: 500 },
+        { value: -10, easing: "easeOutSine", duration: 200 },
+        { value: 0, easing: "easeOutQuad", duration: 400 },
       ],
       opacity: [
-        { value: 1, easing: "easeOutSine", duration: 250 },
-        { value: 0.7, easing: "easeOutQuad", duration: 500 },
+        { value: 1, easing: "easeOutSine", duration: 200 },
+        { value: 0.7, easing: "easeOutQuad", duration: 400 },
       ],
       delay: anime.stagger(100, {
         grid: [
@@ -240,7 +237,7 @@ export default function Home() {
           { value: 1.1, easing: "easeOutSine" },
           { value: 1, easing: "easeOutSine" },
         ],
-        duration: 600,
+        duration: 500,
       });
     }
 
@@ -265,10 +262,17 @@ export default function Home() {
   };
 
   return (
-    <main className="p-6 bg-gradient-to-r from-slate-500 via-slate-700 to-slate-800 min-h-screen">
+    <main className="p-2 bg-gradient-to-r from-slate-500 via-slate-700 to-slate-800 min-h-screen">
       <div className="justify-items-end mr-10">
         <Title />
       </div>
+
+      {/* Display the choices of which search function to use */}
+      <SearchAlgorithmSelector 
+        selectedAlgorithm={selectedAlgorithm}
+        setSelectedAlgorithm={setSelectedAlgorithm}
+      />
+
       <InputNumber
         val={val}
         setVal={setVal}
@@ -282,7 +286,7 @@ export default function Home() {
 
       {/* Display the array */}
       <div
-        className="group mt-10 w-full font-mono p-3 mx-auto"
+        className="p-4 group w-full font-mono mx-auto"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${Math.ceil(

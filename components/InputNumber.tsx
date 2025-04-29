@@ -24,7 +24,7 @@ export default function InputNumber({
   resetAnimations
 }: InputNumberProps) {
   return (
-    <div className="mt-20 justify-items-center">
+    <div className="mt-6 justify-items-center">
       <label className="block mb-2 font-mono tracking-wide text-green-200">
         Search for a number:
       </label>
