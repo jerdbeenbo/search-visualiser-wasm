@@ -1,4 +1,3 @@
-// SearchAlgorithmSelector.tsx
 import React from 'react';
 
 type SearchAlgorithmSelectorProps = {
@@ -35,6 +34,18 @@ const SearchAlgorithmSelector: React.FC<SearchAlgorithmSelectorProps> = ({
               onChange={() => setSelectedAlgorithm('binary')}
             />
             <span className="ml-2 text-white">Binary Search</span>
+
+          </label>
+          <label className="inline-flex items-center">
+            <input
+              type="radio"
+              className="form-radio text-green-500 h-5 w-5"
+              value="jump"
+              checked={selectedAlgorithm === 'jump'}
+              onChange={() => setSelectedAlgorithm('jump')}
+            />
+            <span className="ml-2 text-white">Jump Search</span>
+
           </label>
         </div>
       </div>

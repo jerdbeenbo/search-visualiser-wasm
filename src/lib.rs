@@ -22,6 +22,71 @@ pub struct SortingData {
 }
 
 #[wasm_bindgen]
+pub fn jump_search(js_val: JsValue) -> Result<JsValue, JsValue> {
+
+    //get data
+    let mut data: SortingData = serde_wasm_bindgen::from_value(js_val)?;
+    
+    //Distance to Jump
+    let jump_val: usize = (data.values.len() as f64).sqrt() as usize;
+
+    //initialise the guesses array for animation purposes later
+    let mut guesses_total: Vec<Guess> = Vec::new();
+
+    //Iterate over the dataset
+    'outer: for i in (0..data.values.len()).step_by(jump_val) {
+        
+        let current_guess: Guess = Guess {
+             current_high: i,
+             current_low: i,
+             current_middle: i,
+        };
+
+        //Add the guess state to our guesses vector
+        guesses_total.push(current_guess);
+
+        if data.values[i] == data.target {
+            //found the target
+            data.target_found_index = Some(i as i32);
+            break;
+        }
+        else if data.values[i] > data.target {
+            //We jump over the target, find it by going back to last pos
+            //and linear searching to this pos
+            let start = if i >= jump_val { i - jump_val } else { 0 };
+            for x in start..i {
+
+                //record guess information for animation
+                let current_guess: Guess = Guess {
+                    current_high: x,
+                    current_low: x,
+                    current_middle: x,
+               };
+
+                //Add the guess state to our guesses vector
+                guesses_total.push(current_guess);
+
+                if data.values[x] == data.target {
+                    data.target_found_index = Some(x as i32);
+                    break 'outer;   //Break reference to outerloop with a 'label
+                }
+            }
+        }
+    }
+
+    // If we didn't find it, set found_index to None
+    if data.target_found_index.is_none() {
+        data.target_found_index = None;
+    }
+
+    // Store the guesses in the data structure
+    data.guesses = guesses_total;
+
+    // Convert the Rust structure back to a JavaScript object and return result
+    Ok(serde_wasm_bindgen::to_value(&data)?)
+}
+
+#[wasm_bindgen]
 pub fn linear_search(js_val: JsValue) -> Result<JsValue, JsValue> {
     let mut data: SortingData = serde_wasm_bindgen::from_value(js_val)?;
 
